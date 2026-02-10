@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/models/task_set.dart';
+import 'package:todo_app/main.dart';
 
 class TodoListScreen extends StatefulWidget {
   const TodoListScreen({super.key});
@@ -24,9 +25,16 @@ class _TodoListScreenState extends State<TodoListScreen> {
       createdAt: DateTime.now(),
     );
 
+    AppConfig.log('Creating task with ID: ${task.id_}');
+    AppConfig.log('Task title: ${task.title}');
+    AppConfig.log('Current TASK_SET size before: ${TASK_SET.tasks.length}');
+
     setState(() {
       TASK_SET.appendTask(task);
     });
+
+    AppConfig.log('Current TASK_SET size after: ${TASK_SET.tasks.length}');
+    AppConfig.log('All task IDs: ${TASK_SET.tasks.map((t) => t.id_).toList()}');
 
     _titleController.clear();
     _descriptionController.clear();
@@ -174,8 +182,12 @@ class _TodoListScreenState extends State<TodoListScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.open_in_new),
+                          icon: Icon(
+                            Icons.open_in_new,
+                            color: Colors.blue[400],
+                          ),
                           onPressed: () {
+                            AppConfig.log('Navigating to task: ${task.id_}');
                             Navigator.pushNamed(
                               context,
                               '/task_page/${task.id_}',
@@ -191,6 +203,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                       ],
                     ),
                     onTap: () {
+                      AppConfig.log('Tapped on task: ${task.id_}');
                       Navigator.pushNamed(context, '/task_page/${task.id_}');
                     },
                   ),

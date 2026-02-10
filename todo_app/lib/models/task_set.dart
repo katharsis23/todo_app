@@ -39,4 +39,16 @@ class TaskSet {
   }
 }
 
-final TaskSet TASK_SET = TaskSet(tasks: []);
+// Make TASK_SET persistent by using a singleton pattern
+class TaskManager {
+  static final TaskManager _instance = TaskManager._internal();
+  factory TaskManager() => _instance;
+  TaskManager._internal();
+
+  final TaskSet _taskSet = TaskSet(tasks: []);
+
+  TaskSet get taskSet => _taskSet;
+}
+
+final TaskManager taskManager = TaskManager();
+final TaskSet TASK_SET = taskManager.taskSet;
