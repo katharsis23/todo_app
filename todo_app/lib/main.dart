@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/pages/TodoList.dart';
-import 'package:todo_app/pages/TaskScreen.dart';
+import 'package:todo_app/pages/todo_list.dart';
+import 'package:todo_app/pages/task_screen.dart';
 
 // Global configuration
 class AppConfig {
@@ -47,7 +47,7 @@ class TodoApp extends StatelessWidget {
               final taskName = uri.pathSegments[1];
               AppConfig.log('Routing to TaskScreen with task: $taskName');
               return MaterialPageRoute(
-                builder: (context) => TaskScreen(task_name: taskName),
+                builder: (context) => TaskScreen(taskName: taskName),
               );
             }
             AppConfig.log('Route not found: ${settings.name}');
