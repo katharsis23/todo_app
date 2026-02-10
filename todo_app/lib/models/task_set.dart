@@ -31,7 +31,11 @@ class TaskSet {
   }
 
   Task? get_task(String id_) {
-    return tasks.firstWhere((task) => task.id_ == id_);
+    try {
+      return tasks.firstWhere((task) => task.id_ == id_);
+    } catch (e) {
+      return null;
+    }
   }
 }
 
