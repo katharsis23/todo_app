@@ -1,0 +1,30 @@
+name: Flutter CI CD pipeline
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  # Added a job ID here (e.g., 'build-and-test')
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.35.6"
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Linter
+      - name: Analyze code
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test
