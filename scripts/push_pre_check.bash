@@ -8,7 +8,7 @@ NC="\033[0m"
 
 echo -e "${BLUE}Running pre-push checks...${NC}"
 
-cd ../todo_app || { echo -e "${RED}Directory not found!${NC}"; exit 1; }
+cd ./todo_app || { echo -e "${RED}Directory not found!${NC}"; exit 1; }
 
 echo -e "${BLUE}Running flutter analyze...${NC}"
 if flutter analyze; then
