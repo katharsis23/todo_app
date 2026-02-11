@@ -138,3 +138,4 @@ This project is licensed under the terms specified in the LICENSE file.
 - Push notifications for task reminders
 - Collaborative task management
 - Data export/import functionality
+
