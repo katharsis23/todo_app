@@ -191,7 +191,10 @@ class _TodoListScreenState extends State<TodoListScreen> {
                             Navigator.pushNamed(
                               context,
                               '/task_page/${task.id_}',
-                            );
+                            ).then((_) {
+                              if (!mounted) return;
+                              setState(() {});
+                            });
                           },
                           tooltip: 'Open Task',
                         ),
@@ -204,7 +207,13 @@ class _TodoListScreenState extends State<TodoListScreen> {
                     ),
                     onTap: () {
                       AppConfig.log('Tapped on task: ${task.id_}');
-                      Navigator.pushNamed(context, '/task_page/${task.id_}');
+                      Navigator.pushNamed(
+                        context,
+                        '/task_page/${task.id_}',
+                      ).then((_) {
+                        if (!mounted) return;
+                        setState(() {});
+                      });
                     },
                   ),
                 );

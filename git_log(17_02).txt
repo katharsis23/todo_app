@@ -1,0 +1,100 @@
+*   72fd838 (HEAD -> pre-release0.1, origin/pre-release0.1, origin/dev, dev) Merge pull request #9 from katharsis23/refactor/General/Readme
+|\  
+| * 3152a04 (origin/refactor/General/Readme, refactor/General/Readme) Linter changes
+| * 583972d Refactored readme
+|/  
+*   a9153f3 Merge pull request #8 from katharsis23/feature/flutter/TaskPage
+|\  
+| * 6c7c125 (origin/feature/flutter/TaskPage, feature/flutter/TaskPage) Add Task Page
+|/  
+*   534fdbf Merge pull request #7 from katharsis23/feature/Workflow/FlutterDocker
+|\  
+| * 2646586 (origin/feature/Workflow/FlutterDocker, feature/Workflow/FlutterDocker) Added dockerfile for automated build
+|/  
+*   525d105 Merge branch 'dev' of https://github.com/katharsis23/todo_app into dev
+|\  
+| *   5cfb2d2 Merge pull request #6 from katharsis23/feature/flutter/MainPage
+| |\  
+| | * e55d54d (origin/feature/flutter/MainPage, feature/flutter/MainPage) Added homepage
+| |/  
+* / 3452dc1 Added tests
+|/  
+*   9d0d09c Merge pull request #5 from katharsis23/feature/flutter/TaskModel
+|\  
+| * 08a2569 (origin/feature/flutter/TaskModel, feature/flutter/TaskModel) Added task model, task set as a singleton and updated test
+|/  
+*   89d0433 Merge pull request #4 from katharsis23/feature/Workflow/CICD
+|\  
+* \   717a24b Merge pull request #3 from katharsis23/feature/Workflow/CICD
+|\ \  
+| | | *   2c3cac4 (refs/stash) WIP on feature/Workflow/CICD: 79b940c Test commit after adding the pre-commit hook
+| | | |\  
+| | | | * 372ecf1 index on feature/Workflow/CICD: 79b940c Test commit after adding the pre-commit hook
+| | | |/  
+| | | * 79b940c (origin/feature/Workflow/CICD, feature/Workflow/CICD) Test commit after adding the pre-commit hook
+| | |/  
+| | * 4c29976 Added automated script for checking and fixed linting issues
+| | * 8897c2d FIXED: avoided duplicated commit historz
+| | * c4d0071 FIXED: added path in CI/CD flutter
+| |/  
+| * b522421 Temporary added CI via Github Actions
+|/  
+*   d6080ca Merge pull request #2 from katharsis23/feature/flutter/UserModel
+|\  
+| * e0d69eb (origin/feature/flutter/UserModel, feature/flutter/UserModel) Set Up UserModel
+|/  
+*   49b0799 Merge pull request #1 from katharsis23/feature/flutter/SetUpFlutterApp
+|\  
+| * ed6f748 (origin/feature/flutter/SetUpFlutterApp, feature/flutter/SetUpFlutterApp) Set Up Flutter succesfully
+|/  
+* 06afaab (origin/main, origin/HEAD, main) Initial commit
+*   72fd838 (origin/pre-release0.1, origin/dev, pre-release0.1, dev) Merge pull request #9 from katharsis23/refactor/General/Readme
+|\  
+| * 3152a04 (origin/refactor/General/Readme, refactor/General/Readme) Linter changes
+| * 583972d Refactored readme
+|/  
+*   a9153f3 Merge pull request #8 from katharsis23/feature/flutter/TaskPage
+|\  
+| * 6c7c125 (origin/feature/flutter/TaskPage, feature/flutter/TaskPage) Add Task Page
+|/  
+*   534fdbf Merge pull request #7 from katharsis23/feature/Workflow/FlutterDocker
+|\  
+| * 2646586 (origin/feature/Workflow/FlutterDocker, feature/Workflow/FlutterDocker) Added dockerfile for automated build
+|/  
+*   525d105 Merge branch 'dev' of https://github.com/katharsis23/todo_app into dev
+|\  
+| *   5cfb2d2 Merge pull request #6 from katharsis23/feature/flutter/MainPage
+| |\  
+| | * e55d54d (origin/feature/flutter/MainPage, feature/flutter/MainPage) Added homepage
+| |/  
+* / 3452dc1 Added tests
+|/  
+*   9d0d09c Merge pull request #5 from katharsis23/feature/flutter/TaskModel
+|\  
+| * 08a2569 (origin/feature/flutter/TaskModel, feature/flutter/TaskModel) Added task model, task set as a singleton and updated test
+|/  
+*   89d0433 Merge pull request #4 from katharsis23/feature/Workflow/CICD
+|\  
+* \   717a24b Merge pull request #3 from katharsis23/feature/Workflow/CICD
+|\ \  
+| | | *   2c3cac4 (refs/stash) WIP on feature/Workflow/CICD: 79b940c Test commit after adding the pre-commit hook
+| | | |\  
+| | | | * 372ecf1 index on feature/Workflow/CICD: 79b940c Test commit after adding the pre-commit hook
+| | | |/  
+| | | * 79b940c (origin/feature/Workflow/CICD, feature/Workflow/CICD) Test commit after adding the pre-commit hook
+| | |/  
+| | * 4c29976 Added automated script for checking and fixed linting issues
+| | * 8897c2d FIXED: avoided duplicated commit historz
+| | * c4d0071 FIXED: added path in CI/CD flutter
+| |/  
+| * b522421 Temporary added CI via Github Actions
+|/  
+*   d6080ca Merge pull request #2 from katharsis23/feature/flutter/UserModel
+|\  
+| * e0d69eb (origin/feature/flutter/UserModel, feature/flutter/UserModel) Set Up UserModel
+|/  
+*   49b0799 Merge pull request #1 from katharsis23/feature/flutter/SetUpFlutterApp
+|\  
+| * ed6f748 (origin/feature/flutter/SetUpFlutterApp, feature/flutter/SetUpFlutterApp) Set Up Flutter succesfully
+|/  
+* 06afaab (HEAD -> main, origin/main, origin/HEAD) Initial commit

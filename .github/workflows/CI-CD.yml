@@ -10,6 +10,9 @@ jobs:
   # Added a job ID here (e.g., 'build-and-test')
   build-and-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mode: [debug, release]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -31,3 +34,29 @@ jobs:
       - name: Run tests
         working-directory: ./todo_app
         run: flutter test
+
+      - name: Build Docker image (${{ matrix.mode }})
+        working-directory: ./todo_app
+        run: |
+          docker build \
+            --build-arg RELEASE_MODE=${{ matrix.mode }} \
+            -t todo-app:${{ matrix.mode }} \
+            .
+
+  deploy-release:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build and push release image
+        working-directory: ./todo_app
+        run: |
+          docker build \
+            --build-arg RELEASE_MODE=release \
+            -t todo-app:latest \
+            .
+          # Add your registry push commands here
+          # docker push your-registry/todo-app:latest
