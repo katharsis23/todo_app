@@ -11,7 +11,11 @@ COPY . .
 RUN flutter analyze
 RUN flutter test
 
-RUN flutter build web --release
+ARG RELEASE_MODE=release
+ENV MODE=$RELEASE_MODE
+
+
+RUN flutter build web --${MODE}
 
 # SERVE stage
 FROM nginx:alpine
