@@ -16,8 +16,12 @@ RUN chmod -R 777 /app/.dart_tool || true
 ARG RELEASE_MODE=release
 ENV MODE=$RELEASE_MODE
 
-RUN flutter analyze
-RUN flutter test
+# Set Flutter environment
+ENV FLUTTER_ROOT=/home/mobiledevops/.flutter-sdk
+ENV GIT_DIR=/dev/null
+
+RUN flutter analyze --no-pub
+RUN flutter test --no-pub
 
 RUN flutter build web --${MODE}
 
