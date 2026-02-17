@@ -3,6 +3,9 @@ FROM growerp/flutter-sdk-image:3.35.6 AS build_env
 
 WORKDIR /app
 
+# Initialize git repo to avoid version issues
+RUN git init && git config user.email "test@example.com" && git config user.name "Test User"
+
 COPY pubspec.yaml pubspec.lock ./
 RUN flutter pub get
 
@@ -18,9 +21,8 @@ ENV MODE=$RELEASE_MODE
 
 # Set Flutter environment
 ENV FLUTTER_ROOT=/home/mobiledevops/.flutter-sdk
-ENV GIT_DIR=/dev/null
 
-# Skip analyze/test in Docker - they run in CI
+# Build web app
 RUN flutter build web --${MODE}
 
 # SERVE stage
