@@ -11,10 +11,14 @@ RUN flutter pub get
 
 COPY . .
 
-# Fix permissions for Flutter
+# Fix permissions for Flutter - run as root to avoid permission issues
+USER root
 RUN mkdir -p /app/.flutter-plugins-dependencies || true
+RUN mkdir -p /app/.dart_tool || true
 RUN chmod -R 777 /app/.flutter-plugins-dependencies || true
 RUN chmod -R 777 /app/.dart_tool || true
+RUN chown -R root:root /app/.flutter-plugins-dependencies || true
+RUN chown -R root:root /app/.dart_tool || true
 
 ARG RELEASE_MODE=release
 ENV MODE=$RELEASE_MODE
@@ -22,7 +26,7 @@ ENV MODE=$RELEASE_MODE
 # Set Flutter environment
 ENV FLUTTER_ROOT=/home/mobiledevops/.flutter-sdk
 
-# Build web app
+# Build web app as root
 RUN flutter build web --${MODE}
 
 # SERVE stage
