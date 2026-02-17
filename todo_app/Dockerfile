@@ -20,9 +20,7 @@ ENV MODE=$RELEASE_MODE
 ENV FLUTTER_ROOT=/home/mobiledevops/.flutter-sdk
 ENV GIT_DIR=/dev/null
 
-RUN flutter analyze --no-pub
-RUN flutter test --no-pub
-
+# Skip analyze/test in Docker - they run in CI
 RUN flutter build web --${MODE}
 
 # SERVE stage
