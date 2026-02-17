@@ -1,5 +1,5 @@
 # BUILD
-FROM growerp/flutter-sdk-image:3.35.6 AS build_env
+FROM ghcr.io/cirruslabs/flutter:3.35.6 AS build_env
 
 WORKDIR /app
 
@@ -24,7 +24,7 @@ ARG RELEASE_MODE=release
 ENV MODE=$RELEASE_MODE
 
 # Set Flutter environment
-ENV FLUTTER_ROOT=/home/mobiledevops/.flutter-sdk
+ENV FLUTTER_ROOT=/opt/flutter
 
 # Build web app as root
 RUN flutter build web --${MODE}
