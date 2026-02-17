@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  app-dev:
+    build:
+      context: ./todo_app
+      args:
+        - RELEASE_MODE=debug
+    ports:
+      - "8080:80"
+    environment:
+      - MODE=debug
+    container_name: todo-app-dev
+
+  app-release:
+    build:
+      context: ./todo_app
+      args:
+        - RELEASE_MODE=release
+    ports:
+      - "8081:80"
+    environment:
+      - MODE=release
+    container_name: todo-app-release
+    profiles:
+      - release
