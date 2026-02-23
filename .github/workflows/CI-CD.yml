@@ -51,12 +51,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build and push release image
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.35.6"
+
+      - name: Install dependencies
         working-directory: ./todo_app
-        run: |
-          docker build \
-            --build-arg RELEASE_MODE=release \
-            -t todo-app:latest \
-            .
-          # Add your registry push commands here
-          # docker push your-registry/todo-app:latest
+        run: flutter pub get
+
+      - name: Build Flutter web
+        working-directory: ./todo_app
+        run: flutter build web --release --base-href="/"
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_ID }}
+          working-directory: ./
+          vercel-args: '--prod'
