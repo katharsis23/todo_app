@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "name": "todo-app",
+  "builds": [
+    {
+      "src": "todo_app/build/web/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/todo_app/build/web/$1"
+    }
+  ],
+  "installCommand": "cd todo_app && flutter pub get",
+  "buildCommand": "cd todo_app && flutter build web --release",
+  "outputDirectory": "todo_app/build/web"
+}
