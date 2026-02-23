@@ -157,170 +157,183 @@ class _TaskScreenState extends State<TaskScreen> {
       );
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_isEditing ? 'Edit Task' : 'Task Details'),
-        backgroundColor: Colors.blue[600],
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: Icon(_isEditing ? Icons.save : Icons.edit),
-            onPressed: _toggleEdit,
-            tooltip: _isEditing ? 'Save' : 'Edit',
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: _deleteTask,
-            tooltip: 'Delete',
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Status Card
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    Icon(
-                      _task?.isCompleted == true
-                          ? Icons.check_circle
-                          : Icons.radio_button_unchecked,
-                      color: _task?.isCompleted == true
-                          ? Colors.green
-                          : Colors.grey,
-                      size: 24,
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      _task?.isCompleted == true ? 'Completed' : 'Pending',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: _task?.isCompleted == true
-                            ? Colors.green
-                            : Colors.grey[700],
-                      ),
-                    ),
-                    const Spacer(),
-                    ElevatedButton.icon(
-                      onPressed: _toggleComplete,
-                      icon: Icon(
-                        _task?.isCompleted == true ? Icons.undo : Icons.check,
-                      ),
-                      label: Text(
-                        _task?.isCompleted == true
-                            ? 'Mark Incomplete'
-                            : 'Mark Complete',
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _task?.isCompleted == true
-                            ? Colors.orange
-                            : Colors.green,
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+    return PopScope(
+      canPop: !_isEditing,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        if (_isEditing) {
+          _saveTask();
+          setState(() {
+            _isEditing = false;
+          });
+        }
+        Navigator.of(context).pop();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(_isEditing ? 'Edit Task' : 'Task Details'),
+          backgroundColor: Colors.blue[600],
+          foregroundColor: Colors.white,
+          actions: [
+            IconButton(
+              icon: Icon(_isEditing ? Icons.save : Icons.edit),
+              onPressed: _toggleEdit,
+              tooltip: _isEditing ? 'Save' : 'Edit',
             ),
-            const SizedBox(height: 16),
-
-            // Title Field
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Title',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: _titleController,
-                      enabled: _isEditing,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Enter task title',
-                      ),
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Description Field
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Description',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: _descriptionController,
-                      enabled: _isEditing,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Enter task description',
-                      ),
-                      maxLines: 5,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Metadata
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Task Information',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    _buildInfoRow('Task ID:', _task?.id_ ?? 'Unknown'),
-                    _buildInfoRow(
-                      'Created:',
-                      _formatDate(_task?.createdAt ?? DateTime.now()),
-                    ),
-                    if (_task?.appointedAt != null)
-                      _buildInfoRow(
-                        'Appointed:',
-                        _formatDate(_task!.appointedAt!),
-                      ),
-                  ],
-                ),
-              ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: _deleteTask,
+              tooltip: 'Delete',
             ),
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Status Card
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Icon(
+                        _task?.isCompleted == true
+                            ? Icons.check_circle
+                            : Icons.radio_button_unchecked,
+                        color: _task?.isCompleted == true
+                            ? Colors.green
+                            : Colors.grey,
+                        size: 24,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        _task?.isCompleted == true ? 'Completed' : 'Pending',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: _task?.isCompleted == true
+                              ? Colors.green
+                              : Colors.grey[700],
+                        ),
+                      ),
+                      const Spacer(),
+                      ElevatedButton.icon(
+                        onPressed: _toggleComplete,
+                        icon: Icon(
+                          _task?.isCompleted == true ? Icons.undo : Icons.check,
+                        ),
+                        label: Text(
+                          _task?.isCompleted == true
+                              ? 'Mark Incomplete'
+                              : 'Mark Complete',
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: _task?.isCompleted == true
+                              ? Colors.orange
+                              : Colors.green,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Title Field
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Title',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _titleController,
+                        enabled: _isEditing,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Enter task title',
+                        ),
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Description Field
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Description',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextField(
+                        controller: _descriptionController,
+                        enabled: _isEditing,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Enter task description',
+                        ),
+                        maxLines: 5,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Metadata
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Task Information',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildInfoRow('Task ID:', _task?.id_ ?? 'Unknown'),
+                      _buildInfoRow(
+                        'Created:',
+                        _formatDate(_task?.createdAt ?? DateTime.now()),
+                      ),
+                      if (_task?.appointedAt != null)
+                        _buildInfoRow(
+                          'Appointed:',
+                          _formatDate(_task!.appointedAt!),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

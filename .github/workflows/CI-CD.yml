@@ -10,6 +10,9 @@ jobs:
   # Added a job ID here (e.g., 'build-and-test')
   build-and-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mode: [debug, release]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -31,3 +34,41 @@ jobs:
       - name: Run tests
         working-directory: ./todo_app
         run: flutter test
+
+      - name: Build Docker image (${{ matrix.mode }})
+        working-directory: ./todo_app
+        run: |
+          docker build \
+            --build-arg RELEASE_MODE=${{ matrix.mode }} \
+            -t todo-app:${{ matrix.mode }} \
+            .
+
+  deploy-release:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.35.6"
+
+      - name: Install dependencies
+        working-directory: ./todo_app
+        run: flutter pub get
+
+      - name: Build Flutter web
+        working-directory: ./todo_app
+        run: flutter build web --release --base-href="/"
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_ID }}
+          working-directory: ./
+          vercel-args: '--prod'
