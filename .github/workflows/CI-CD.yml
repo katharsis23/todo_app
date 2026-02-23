@@ -62,10 +62,11 @@ jobs:
 
       - name: Build Flutter web
         working-directory: ./todo_app
-        run: flutter build web --release --base-href="/"
+        run: flutter build web --release --base-href="/todo_app/"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./todo_app/build/web
+          destination_dir: ./
