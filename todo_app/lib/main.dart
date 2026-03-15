@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:todo_app/pages/todo_list.dart';
 import 'package:todo_app/pages/task_screen.dart';
 import 'package:todo_app/models/task_set.dart';
@@ -17,9 +19,29 @@ class AppConfig {
       print('[DEBUG] $message');
     }
   }
+
+  static const String posthogApiKey = String.fromEnvironment('POSTHOG_API_KEY');
+  static const String posthogHost = String.fromEnvironment(
+    'POSTHOG_HOST',
+    defaultValue: 'https://us.i.posthog.com',
+  );
+  static const bool posthogEnabled = bool.fromEnvironment(
+    'POSTHOG_ENABLED',
+    defaultValue: true,
+  );
 }
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (!kIsWeb &&
+      AppConfig.posthogEnabled &&
+      AppConfig.posthogApiKey.isNotEmpty) {
+    final config = PostHogConfig(AppConfig.posthogApiKey);
+    config.debug = AppConfig.debugMode;
+    config.captureApplicationLifecycleEvents = true;
+    config.host = AppConfig.posthogHost;
+    await Posthog().setup(config);
+  }
   runApp(const TodoApp());
 }
 
@@ -31,6 +53,7 @@ class TodoApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Todo App',
+      navigatorObservers: [PosthogObserver()],
       onGenerateRoute: (settings) {
         AppConfig.log('Navigation to: ${settings.name}');
 
@@ -38,6 +61,7 @@ class TodoApp extends StatelessWidget {
           case '/':
             AppConfig.log('Routing to HomePage');
             return MaterialPageRoute(
+              settings: const RouteSettings(name: 'Todo List'),
               builder: (context) => const TodoListScreen(),
             );
           default:
@@ -52,6 +76,7 @@ class TodoApp extends StatelessWidget {
                 'Available task IDs: ${TASK_SET.tasks.map((t) => t.id_).toList()}',
               );
               return MaterialPageRoute(
+                settings: RouteSettings(name: 'Task/$taskName'),
                 builder: (context) => TaskScreen(taskName: taskName),
               );
             }
