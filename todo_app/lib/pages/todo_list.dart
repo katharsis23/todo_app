@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/models/task_set.dart';
 import 'package:todo_app/main.dart';
@@ -33,6 +34,16 @@ class _TodoListScreenState extends State<TodoListScreen> {
       TASK_SET.appendTask(task);
     });
 
+    if (AppConfig.posthogEnabled && AppConfig.posthogApiKey.isNotEmpty) {
+      Posthog().capture(
+        eventName: 'task created',
+        properties: {
+          'task_id': task.id_,
+          'has_description': task.description.trim().isNotEmpty,
+        },
+      );
+    }
+
     AppConfig.log('Current TASK_SET size after: ${TASK_SET.tasks.length}');
     AppConfig.log('All task IDs: ${TASK_SET.tasks.map((t) => t.id_).toList()}');
 
@@ -56,15 +67,36 @@ class _TodoListScreenState extends State<TodoListScreen> {
         TASK_SET.tasks[index] = updatedTask;
       }
     });
+
+    if (AppConfig.posthogEnabled && AppConfig.posthogApiKey.isNotEmpty) {
+      Posthog().capture(
+        eventName: 'task completion toggled',
+        properties: {
+          'task_id': task.id_,
+          'to_completed': !task.isCompleted,
+          'source': 'list',
+        },
+      );
+    }
   }
 
   void _deleteTask(Task task) {
     setState(() {
       TASK_SET.removeTask(task);
     });
+
+    if (AppConfig.posthogEnabled && AppConfig.posthogApiKey.isNotEmpty) {
+      Posthog().capture(
+        eventName: 'task deleted',
+        properties: {'task_id': task.id_, 'source': 'list'},
+      );
+    }
   }
 
   void _showAddTaskDialog() {
+    if (AppConfig.posthogEnabled && AppConfig.posthogApiKey.isNotEmpty) {
+      Posthog().capture(eventName: 'task create dialog opened');
+    }
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -188,6 +220,16 @@ class _TodoListScreenState extends State<TodoListScreen> {
                           ),
                           onPressed: () {
                             AppConfig.log('Navigating to task: ${task.id_}');
+                            if (AppConfig.posthogEnabled &&
+                                AppConfig.posthogApiKey.isNotEmpty) {
+                              Posthog().capture(
+                                eventName: 'task opened',
+                                properties: {
+                                  'task_id': task.id_,
+                                  'source': 'list_icon',
+                                },
+                              );
+                            }
                             Navigator.pushNamed(
                               context,
                               '/task_page/${task.id_}',
@@ -207,6 +249,16 @@ class _TodoListScreenState extends State<TodoListScreen> {
                     ),
                     onTap: () {
                       AppConfig.log('Tapped on task: ${task.id_}');
+                      if (AppConfig.posthogEnabled &&
+                          AppConfig.posthogApiKey.isNotEmpty) {
+                        Posthog().capture(
+                          eventName: 'task opened',
+                          properties: {
+                            'task_id': task.id_,
+                            'source': 'list_row',
+                          },
+                        );
+                      }
                       Navigator.pushNamed(
                         context,
                         '/task_page/${task.id_}',
