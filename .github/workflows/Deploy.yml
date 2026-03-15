@@ -1,0 +1,64 @@
+name: Flutter Web Deploy
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.35.6"
+
+      - name: Install dependencies
+        working-directory: ./todo_app
+        run: flutter pub get
+
+      - name: Analyze
+        working-directory: ./todo_app
+        run: flutter analyze
+
+      - name: Test
+        working-directory: ./todo_app
+        run: flutter test
+
+      - name: Build Web
+        working-directory: ./todo_app
+        run: flutter build web --release --base-href="/todo_app/"
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: todo_app/build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

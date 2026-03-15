@@ -1,3 +1,4 @@
+[![Flutter Web Deploy](https://github.com/katharsis23/todo_app/actions/workflows/Deploy.yml/badge.svg?event=deployment_status)](https://github.com/katharsis23/todo_app/actions/workflows/Deploy.yml)
 # Todo App
 
 A Flutter-based task management application with a clean, intuitive interface for organizing and tracking daily tasks.
