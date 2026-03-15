@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
+import 'package:todo_app/posthog_web_feature_flags.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/models/task_set.dart';
 import 'package:todo_app/main.dart';
@@ -14,6 +16,32 @@ class TodoListScreen extends StatefulWidget {
 class _TodoListScreenState extends State<TodoListScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+
+  Future<bool> _isAddTaskFeatureEnabled() async {
+    if (kIsWeb) {
+      return posthogIsFeatureEnabled('add-task-feature');
+    }
+
+    if (!AppConfig.posthogEnabled || AppConfig.posthogApiKey.isEmpty) {
+      return false;
+    }
+
+    return await Posthog().isFeatureEnabled('add-task-feature');
+  }
+
+  Future<void> _onAddTaskPressed() async {
+    final enabled = await _isAddTaskFeatureEnabled();
+    if (!mounted) return;
+
+    if (enabled) {
+      _showAddTaskDialog();
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Add Task feature is disabled')),
+    );
+  }
 
   void _addTask() {
     if (_titleController.text.trim().isEmpty) return;
@@ -272,7 +300,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
               },
             ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _showAddTaskDialog,
+        onPressed: _onAddTaskPressed,
         backgroundColor: Colors.blue[600],
         foregroundColor: Colors.white,
         icon: const Icon(Icons.add),
