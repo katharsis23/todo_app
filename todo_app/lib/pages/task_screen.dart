@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/models/task_set.dart';
 import 'package:todo_app/main.dart';
@@ -73,6 +74,16 @@ class _TaskScreenState extends State<TaskScreen> {
         TASK_SET.tasks[index] = updatedTask;
         _task = updatedTask;
       });
+
+      if (AppConfig.posthogEnabled && AppConfig.posthogApiKey.isNotEmpty) {
+        Posthog().capture(
+          eventName: 'task updated',
+          properties: {
+            'task_id': updatedTask.id_,
+            'has_description': updatedTask.description.trim().isNotEmpty,
+          },
+        );
+      }
     }
   }
 
@@ -94,11 +105,29 @@ class _TaskScreenState extends State<TaskScreen> {
         TASK_SET.tasks[index] = updatedTask;
         _task = updatedTask;
       });
+
+      if (AppConfig.posthogEnabled && AppConfig.posthogApiKey.isNotEmpty) {
+        Posthog().capture(
+          eventName: 'task completion toggled',
+          properties: {
+            'task_id': updatedTask.id_,
+            'to_completed': updatedTask.isCompleted,
+            'source': 'details',
+          },
+        );
+      }
     }
   }
 
   void _deleteTask() {
     if (_task == null) return;
+
+    if (AppConfig.posthogEnabled && AppConfig.posthogApiKey.isNotEmpty) {
+      Posthog().capture(
+        eventName: 'task delete dialog opened',
+        properties: {'task_id': _task!.id_},
+      );
+    }
 
     showDialog(
       context: context,
@@ -113,6 +142,15 @@ class _TaskScreenState extends State<TaskScreen> {
           ElevatedButton(
             onPressed: () {
               TASK_SET.removeTask(_task!);
+
+              if (AppConfig.posthogEnabled &&
+                  AppConfig.posthogApiKey.isNotEmpty) {
+                Posthog().capture(
+                  eventName: 'task deleted',
+                  properties: {'task_id': _task!.id_, 'source': 'details'},
+                );
+              }
+
               Navigator.of(context).pop();
               Navigator.of(context).pop();
             },
@@ -130,6 +168,12 @@ class _TaskScreenState extends State<TaskScreen> {
   @override
   Widget build(BuildContext context) {
     if (_task == null) {
+      if (AppConfig.posthogEnabled && AppConfig.posthogApiKey.isNotEmpty) {
+        Posthog().capture(
+          eventName: 'task not found',
+          properties: {'task_id': widget.taskName},
+        );
+      }
       return Scaffold(
         appBar: AppBar(
           title: const Text('Task Not Found'),
