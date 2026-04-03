@@ -23,7 +23,8 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
-      - uses: subosito/flutter-action@v2
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.35.6"
 
@@ -42,21 +43,18 @@ jobs:
       - name: Install Sentry CLI
         run: curl -sL https://sentry.io/get-cli/ | bash
 
-      - name: Create sentry.properties
-        working-directory: ./todo_app
-        run: |
-          echo "auth_token=${{ secrets.SENTRY_AUTH_TOKEN }}" > sentry.properties
-          echo "org=lviv-politechnic" >> sentry.properties
-          echo "project=flutter" >> sentry.properties
-
       - name: Build Web with Sentry
         working-directory: ./todo_app
         run: |
+          VERSION=$(git rev-parse --short HEAD)
           flutter build web --release --base-href="/todo_app/" \
-            --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }} \
+            --dart-define=SENTRY_RELEASE=$VERSION
 
       - name: Create Sentry release
         working-directory: ./todo_app
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           VERSION=$(git rev-parse --short HEAD)
           sentry-cli releases new "$VERSION" \
@@ -65,13 +63,23 @@ jobs:
 
       - name: Upload sourcemaps to Sentry
         working-directory: ./todo_app
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           VERSION=$(git rev-parse --short HEAD)
-          sentry-cli releases files "$VERSION" \
+          sentry-cli releases files "$VERSION" upload-sourcemaps build/web \
             --org lviv-politechnic \
             --project flutter \
-            --dist ./build/web \
-            --url-prefix "/todo_app/"
+            --url-prefix "/todo_app/" \
+            --rewrite
+
+      - name: Finalize Sentry release
+        working-directory: ./todo_app
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: |
+          VERSION=$(git rev-parse --short HEAD)
+          sentry-cli releases finalize "$VERSION"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
