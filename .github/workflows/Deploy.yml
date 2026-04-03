@@ -68,9 +68,11 @@ jobs:
         run: |
           VERSION=$(git rev-parse --short HEAD)
           sentry-cli sourcemaps upload build/web \
-            --release "$VERSION" \
-            --url-prefix "/todo_app/" \
-            --rewrite
+          --release "$VERSION" \
+          --org lviv-politechnic \
+          --project flutter \
+          --url-prefix "/todo_app/" \
+          --rewrite
 
       - name: Finalize Sentry release
         working-directory: ./todo_app
