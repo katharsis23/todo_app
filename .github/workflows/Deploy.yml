@@ -40,8 +40,7 @@ jobs:
         run: flutter test
 
       - name: Install Sentry CLI
-        run: |
-          curl -sL https://sentry.io/get-cli/ | bash
+        run: curl -sL https://sentry.io/get-cli/ | bash
 
       - name: Create sentry.properties
         working-directory: ./todo_app
@@ -59,18 +58,18 @@ jobs:
       - name: Create Sentry release
         working-directory: ./todo_app
         run: |
-          sentry-cli releases new \
+          VERSION=$(git rev-parse --short HEAD)
+          sentry-cli releases new "$VERSION" \
             --org lviv-politechnic \
-            --project flutter \
-            --version $(git rev-parse --short HEAD)
+            --project flutter
 
       - name: Upload sourcemaps to Sentry
         working-directory: ./todo_app
         run: |
-          sentry-cli releases files \
+          VERSION=$(git rev-parse --short HEAD)
+          sentry-cli releases files "$VERSION" \
             --org lviv-politechnic \
             --project flutter \
-            --version $(git rev-parse --short HEAD) \
             --dist ./build/web \
             --url-prefix "/todo_app/"
 
