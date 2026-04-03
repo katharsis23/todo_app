@@ -4,6 +4,7 @@ import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:todo_app/pages/todo_list.dart';
 import 'package:todo_app/pages/task_screen.dart';
 import 'package:todo_app/models/task_set.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 // Global configuration
 class AppConfig {
@@ -13,6 +14,16 @@ class AppConfig {
   */
   static const bool debugMode = !bool.fromEnvironment('dart.vm.product');
   static bool authorized = false;
+
+  static const bool forceAddTaskFeature = bool.fromEnvironment(
+    'FORCE_ADD_TASK_FEATURE',
+    defaultValue: false,
+  );
+
+  static const bool setSentryTestUser = bool.fromEnvironment(
+    'SENTRY_SET_TEST_USER',
+    defaultValue: false,
+  );
 
   static void log(String message) {
     if (debugMode) {
@@ -42,7 +53,30 @@ Future<void> main() async {
     config.host = AppConfig.posthogHost;
     await Posthog().setup(config);
   }
-  runApp(const TodoApp());
+  const sentryDsn =
+      'https://7156c7d1ba78b5414f0c8bec9d616c98@o4511155920109568.ingest.de.sentry.io/4511155921682512';
+  if (AppConfig.debugMode) {
+    print('[DEBUG] About to init Sentry with DSN: $sentryDsn');
+  }
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = sentryDsn;
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+      // We recommend adjusting this value in production.
+      options.tracesSampleRate = 1.0;
+      options.enableNativeCrashHandling = false;
+      options.enableAutoSessionTracking = false;
+    },
+    appRunner: () {
+      if (AppConfig.debugMode) {
+        print('[DEBUG] Sentry init completed');
+        print(
+          '[DEBUG] Sentry DSN: https://7156c7d1ba78b5414f0c8bec9d616c98@o4511155920109568.ingest.de.sentry.io/4511155921682512',
+        );
+      }
+      return runApp(SentryWidget(child: const TodoApp()));
+    },
+  );
 }
 
 class TodoApp extends StatelessWidget {
@@ -53,7 +87,7 @@ class TodoApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Todo App',
-      navigatorObservers: [PosthogObserver()],
+      navigatorObservers: [SentryNavigatorObserver(), PosthogObserver()],
       onGenerateRoute: (settings) {
         AppConfig.log('Navigation to: ${settings.name}');
 
