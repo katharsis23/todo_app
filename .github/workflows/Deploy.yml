@@ -42,7 +42,6 @@ jobs:
       - name: Install Sentry CLI
         run: |
           curl -sL https://sentry.io/get-cli/ | bash
-          sudo npm install -g @sentry/cli
 
       - name: Create sentry.properties
         working-directory: ./todo_app
