@@ -53,7 +53,7 @@ jobs:
       - name: Build Web with Sentry
         working-directory: ./todo_app
         run: |
-          flutter build web --release --web-renderer html --base-href="/todo_app/" \
+          flutter build web --release --base-href="/todo_app/" \
             --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
 
       - name: Create Sentry release
