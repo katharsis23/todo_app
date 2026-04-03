@@ -67,9 +67,8 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           VERSION=$(git rev-parse --short HEAD)
-          sentry-cli releases files "$VERSION" upload-sourcemaps build/web \
-            --org lviv-politechnic \
-            --project flutter \
+          sentry-cli sourcemaps upload build/web \
+            --release "$VERSION" \
             --url-prefix "/todo_app/" \
             --rewrite
 
