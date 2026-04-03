@@ -120,3 +120,4 @@ app.*.symbols
 
 .env
 .vercel
+todo_app/sentry-wizard
