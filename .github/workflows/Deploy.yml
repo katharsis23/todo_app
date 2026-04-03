@@ -39,9 +39,41 @@ jobs:
         working-directory: ./todo_app
         run: flutter test
 
-      - name: Build Web
+      - name: Install Sentry CLI
+        run: |
+          curl -sL https://sentry.io/get-cli/ | bash
+          sudo npm install -g @sentry/cli
+
+      - name: Create sentry.properties
         working-directory: ./todo_app
-        run: flutter build web --release --base-href="/todo_app/"
+        run: |
+          echo "auth_token=${{ secrets.SENTRY_AUTH_TOKEN }}" > sentry.properties
+          echo "org=lviv-politechnic" >> sentry.properties
+          echo "project=flutter" >> sentry.properties
+
+      - name: Build Web with Sentry
+        working-directory: ./todo_app
+        run: |
+          flutter build web --release --web-renderer html --base-href="/todo_app/" \
+            --dart-define=SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+
+      - name: Create Sentry release
+        working-directory: ./todo_app
+        run: |
+          sentry-cli releases new \
+            --org lviv-politechnic \
+            --project flutter \
+            --version $(git rev-parse --short HEAD)
+
+      - name: Upload sourcemaps to Sentry
+        working-directory: ./todo_app
+        run: |
+          sentry-cli releases files \
+            --org lviv-politechnic \
+            --project flutter \
+            --version $(git rev-parse --short HEAD) \
+            --dist ./build/web \
+            --url-prefix "/todo_app/"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -131,6 +131,37 @@ flutter build web
 
 This project is licensed under the terms specified in the LICENSE file.
 
+## Sentry Integration
+
+This project is integrated with Sentry for error tracking and performance monitoring.
+
+### Setup GitHub Secrets
+
+Add the following secrets to your GitHub repository:
+
+1. **SENTRY_AUTH_TOKEN**: Your Sentry authentication token
+   - Go to Sentry → Settings → Auth Tokens
+   - Create new token with `project:releases` and `project:read` permissions
+   - Add as repository secret
+
+2. **SENTRY_DSN**: Your Sentry DSN
+   - Get from Sentry → Settings → Client Keys (DSN)
+   - Add as repository secret
+
+### CI/CD Integration
+
+The deployment pipeline automatically:
+- Creates Sentry releases for each deployment
+- Uploads sourcemaps for better error tracking
+- Builds with Sentry DSN injected via environment variables
+
+### Local Development
+
+For local development:
+1. Copy `sentry.properties.example` to `sentry.properties`
+2. Add your auth token to the file
+3. Run `flutter run` normally
+
 ## Future Enhancements
 
 - User authentication system
