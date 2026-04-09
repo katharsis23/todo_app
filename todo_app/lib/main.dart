@@ -15,11 +15,6 @@ class AppConfig {
   static const bool debugMode = !bool.fromEnvironment('dart.vm.product');
   static bool authorized = false;
 
-  static const bool forceAddTaskFeature = bool.fromEnvironment(
-    'FORCE_ADD_TASK_FEATURE',
-    defaultValue: false,
-  );
-
   static const bool setSentryTestUser = bool.fromEnvironment(
     'SENTRY_SET_TEST_USER',
     defaultValue: false,

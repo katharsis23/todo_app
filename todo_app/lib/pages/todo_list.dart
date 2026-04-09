@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/models/task_set.dart';
 import 'package:todo_app/main.dart';
+import 'package:todo_app/posthog_web_feature_flags.dart';
 
 class CustomTestException implements Exception {
   final String message;
@@ -26,20 +26,11 @@ class _TodoListScreenState extends State<TodoListScreen> {
   final TextEditingController _descriptionController = TextEditingController();
 
   Future<bool> _isAddTaskFeatureEnabled() async {
-    if (AppConfig.forceAddTaskFeature) {
-      return true;
-    }
-
-    // For web localhost, always enable add task feature
-    if (kIsWeb) {
-      return true;
-    }
-
     if (!AppConfig.posthogEnabled || AppConfig.posthogApiKey.isEmpty) {
       return false;
     }
 
-    return await Posthog().isFeatureEnabled('add-task-feature');
+    return await posthogIsFeatureEnabled('add-task-feature');
   }
 
   Future<void> _doHeavyOperation() async {
